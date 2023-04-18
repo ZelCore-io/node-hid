@@ -1,5 +1,6 @@
 
 var os = require('os')
+var path = require('path')
 
 var EventEmitter = require("events").EventEmitter,
     util = require("util");
@@ -13,17 +14,7 @@ function setDriverType(type) {
 var binding = null;
 function loadBinding() {
     if( !binding ) {
-        if( os.platform() === 'linux' ) {
-            // Linux defaults to hidraw
-            if( !driverType || driverType === 'hidraw' ) {
-                binding = require('bindings')('HID_hidraw.node');
-            } else {
-                binding = require('bindings')('HID.node');
-            }
-        }
-        else {
-            binding = require('bindings')('HID.node');
-        }
+        binding = require('node-gyp-build')(process.env.NODE_ENV !== 'production' ? __dirname : path.join(__dirname, "hid"));
     }
 }
 
